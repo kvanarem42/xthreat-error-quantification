@@ -13,6 +13,11 @@ import matplotlib.pyplot as plt
 
 from xThreat import xThreat
 
+##################### Define Paths ##################################
+data_path = '../1-data-preparation/data-storage/preprocessed_data_top5_leagues.parquet'
+resampled_model_storage_directory = '../resampled-models/' # Note this might become a large folder, make sure to have enough storage space
+#####################################################################
+
 script_starting_time = time.time()
 
 # Specify the partition
@@ -46,7 +51,7 @@ print(len(sampling_params))
 
 
 # Load the data
-data_path = 'xThreat_data_v2.parquet'
+data_path = 'preprocessed_data_top5_leagues.parquet'
 df_events = pd.read_parquet(data_path, engine='fastparquet')
 df_events['shot'] = ~df_events['shot_outcome'].isna()
 df_events['goal'] = df_events['shot_outcome'] == 'Goal'
@@ -94,7 +99,7 @@ for n_x, n_y in grid_sizes:
             xT_resampled.fit(df_sample, filter_events=False)
 
             # Save the resampled method
-            file_path = f'/scratch/kwvanarem/xthreat-research-v1/model-storage/xt-N{sample_size}-n_x{n_x}-n_y{n_y}-i_bootstrap{i_bootstrap}-random_state{random_state}.pickle'
+            file_path = f'{resampled_model_storage_directory}/xt-N{sample_size}-n_x{n_x}-n_y{n_y}-i_bootstrap{i_bootstrap}-random_state{random_state}.pickle'
             xT_resampled.save_to_pickle(file_path)
 
             # Keep track of the storage size of the models

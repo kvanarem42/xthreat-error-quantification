@@ -21,8 +21,6 @@ class DataCleaner:
         ]
 
     def del_redundant_events(self, df_events: pd.DataFrame, del_event_list: List = None):
-        # if del_event_list == None:
-        #     del_event_list = self.redundant_events
         return df_events[~df_events['type'].isin(del_event_list)].copy()
     
     def handle_goalkeeper_event(self, df_events: pd.DataFrame):
@@ -51,8 +49,7 @@ class DataCleaner:
         return df_events
 
     def handle_own_goals(self, df_events: pd.DataFrame):
-        """NOT IMPLEMENTED YET: actions are deleted for now
-        """
+        # Own goals are deleted
         return self.del_redundant_events(df_events, ['Own Goal For','Own Goal Against'])
 
     def clean(self, df_events: pd.DataFrame):

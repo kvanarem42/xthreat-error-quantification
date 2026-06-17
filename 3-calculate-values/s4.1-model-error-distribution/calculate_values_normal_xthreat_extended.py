@@ -8,6 +8,7 @@
 ### the calculations.
 ########################################################################
 
+
 ### Import statements ###
 import time
 import sys, os
@@ -15,9 +16,14 @@ import pandas as pd
 import numpy as np
 from mpi4py import MPI
 
-
 sys.path.append("/home/kwvanarem/xthreat-research-v2/run-06-01-2026/")
 from xThreat import xThreat
+
+
+##################### Define Paths ##################################
+true_model_path = '/scratch/kwvanarem/xthreat-research-v2/model-storage/run-06-01-2026/true-models/'
+resampled_model_path = '/scratch/kwvanarem/xthreat-research-v2/model-storage/run-06-01-2026/resampled-models/'
+#####################################################################
 
 script_starting_time = time.time()
 
@@ -138,10 +144,6 @@ for norm in norms:
         f'transition_matrix_resampled_{norm}_norm',
         f'weighted_transition_matrix_error_{norm}_norm',
     ]
-
-# Paths to the true and resampled models
-true_model_path = '/scratch/kwvanarem/xthreat-research-v2/model-storage/run-06-01-2026/true-models/'
-resampled_model_path = '/scratch/kwvanarem/xthreat-research-v2/model-storage/run-06-01-2026/resampled-models/'
 
 # Convert sampling_params to a list for distributing tasks
 tasks = list(sampling_params.items())

@@ -8,7 +8,13 @@ from mpi4py import MPI
 sys.path.append("/home/kwvanarem/xthreat-research-v2/run-06-01-2026/")
 from xThreat import xThreat
 
-time.sleep(10*60)
+##################### Define Paths ##################################
+data_path = '/home/kwvanarem/xthreat-research-v2/run-06-01-2026/1-data-preparation/data-storage/preprocessed_data_top5_leagues.parquet'
+resampled_model_storage_directory = '/scratch/kwvanarem/xthreat-research-v2/model-storage/run-06-01-2026/resampled-models/'
+#####################################################################
+
+# time.sleep(10*60) # Sleep for 10 minutes to give the cluster time to start all processes and avoid memory issues at the beginning of the script
+script_starting_time = time.time()
 
 script_starting_time = time.time()
 
@@ -51,7 +57,6 @@ if rank == 0:
     print(f'Number of individual bootstraps: {len(sampling_params)}')
 
 # Load the data
-data_path = '../../../1-data-preparation/data-storage/xThreat_data_v3.parquet'
 df_events = pd.read_parquet(data_path, engine='fastparquet')
 df_events['shot'] = ~df_events['shot_outcome'].isna()
 df_events['goal'] = df_events['shot_outcome'] == 'Goal'
@@ -100,7 +105,7 @@ for n_x, n_y in grid_sizes:
             xT_resampled.fit(df_sample, filter_events=False)
 
             # Save the resampled method
-            file_path = f'/scratch/kwvanarem/xthreat-research-v2/model-storage/run-06-01-2026/resampled-models/xt-N{sample_size}-n_x{n_x}-n_y{n_y}-i_bootstrap{i_bootstrap}-random_state{random_state}.pickle'
+            file_path = f'{resampled_model_storage_directory}/xt-N{sample_size}-n_x{n_x}-n_y{n_y}-i_bootstrap{i_bootstrap}-random_state{random_state}.pickle'
             xT_resampled.save_to_pickle(file_path)
 
             # Keep track of the storage size of the models

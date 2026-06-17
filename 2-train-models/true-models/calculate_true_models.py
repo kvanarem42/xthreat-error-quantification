@@ -6,6 +6,11 @@ import numpy as np
 sys.path.append("/home/kwvanarem/xthreat-research-v2/run-06-01-2026/")
 from xThreat import xThreat
 
+##################### Define Paths##################################
+data_path = '/home/kwvanarem/xthreat-research-v2/run-06-01-2026/1-data-preparation/data-storage/preprocessed_data_top5_leagues.parquet'
+storage_directory = '/scratch/kwvanarem/xthreat-research-v2/model-storage/run-06-01-2026/true-models/'
+####################################################################
+
 script_starting_time = time.time()
 
 # The grid sizes
@@ -16,7 +21,6 @@ grid_sizes = [
               ]
 
 # Load the data
-data_path = '/home/kwvanarem/xthreat-research-v2/run-06-01-2026/1-data-preparation/data-storage/preprocessed_data_top5_leagues.parquet'
 df_events = pd.read_parquet(data_path, engine='fastparquet')
 df_events['shot'] = ~df_events['shot_outcome'].isna()
 df_events['goal'] = df_events['shot_outcome'] == 'Goal'
@@ -39,7 +43,7 @@ for n_x, n_y in grid_sizes:
     xT_true.fit(df_events, filter_events=False, convergence_threshold=1e-9)
 
     # Save the resampled method
-    file_path = f'/scratch/kwvanarem/xthreat-research-v2/model-storage/run-06-01-2026/true-models/xt-full-data-n_x{n_x}-n_y{n_y}.pickle'
+    file_path = f'{storage_directory}/xt-full-data-n_x{n_x}-n_y{n_y}.pickle'
     xT_true.save_to_pickle(file_path)
 
 print(f'\nThe whole script took {int((time.time()-script_starting_time)/3600)}h, {int((time.time()-script_starting_time)%3600/60)}m, {int((time.time()-script_starting_time)%60)}s.')

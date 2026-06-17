@@ -334,20 +334,10 @@ class DataSetCreator:
         df_events.drop(columns=['chain_id'], inplace=True)
         return df_events
 
-    # def add_info_next_event(self, df_events: pd.DataFrame):
-    #     for col in self.next_state_columns:
-    #         df_events[f'next_{col}'] = df_events[col].shift(-1)
-    #     return df_events
-    
     def add_info_next_event(self, df_events: pd.DataFrame):
-        # print(df_events[self.next_state_columns].isna().sum())
         for col in self.next_state_columns:
             df_events[f'next_{col}'] = df_events[col].shift(-1)
-        
-        no_next_col = df_events[f'next_{self.next_state_columns[0]}'].isna()
-        # print(no_next_col.sum())
-        
-
+        no_next_col = df_events[f'next_{self.next_state_columns[0]}'].isna()    
         return df_events[~no_next_col]
     
     def filter_columns(self, df_events: pd.DataFrame):

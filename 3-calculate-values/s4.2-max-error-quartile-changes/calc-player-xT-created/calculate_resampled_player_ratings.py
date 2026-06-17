@@ -8,10 +8,12 @@ import numpy as np
 sys.path.append("/home/kwvanarem/xthreat-research-v2/run-06-01-2026/")
 from xThreat import xThreat
 
-# True model path
-true_model_path = "/scratch/kwvanarem/xthreat-research-v2/model-storage/run-06-01-2026/true-models"
-resampled_model_path = "/scratch/kwvanarem/xthreat-research-v2/model-storage/run-06-01-2026/resampled-models"
-
+##################### Define Paths ##################################
+data_path = '/home/kwvanarem/xthreat-research-v2/run-06-01-2026/1-data-preparation/data-storage/preprocessed_data_ligue1_1516.parquet'
+true_model_path = '/scratch/kwvanarem/xthreat-research-v2/model-storage/run-06-01-2026/true-models/'
+resampled_model_path = '/scratch/kwvanarem/xthreat-research-v2/model-storage/run-06-01-2026/resampled-models/'
+output_dir = 'xT_ratings_resampled_10_000.parquet'
+#####################################################################
 
 script_starting_time = time.time()
 
@@ -25,11 +27,10 @@ print(f"Rank: {rank}, Size: {size}")
 batch_size = 50
 
 # Create parquet directory
-output_dir = 'xT_ratings_resampled_10_000.parquet'
 os.makedirs(output_dir, exist_ok=True)
 
 # Total number of bootstraps
-n_bootstraps = 10_000 #40 #00 
+n_bootstraps = 10_000
 
 # Specify the sample sizes
 sample_sizes = [
