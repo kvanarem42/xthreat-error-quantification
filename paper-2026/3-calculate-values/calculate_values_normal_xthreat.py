@@ -1,6 +1,7 @@
 ########################################################################
-### This script calculates the errors of the resampled xThreat models
+### This script is an example of how we calculate the errors of the resampled xThreat models
 ### models compared to the true xThreat model.
+### IT IS NOT USED IN THE PAPER PIPELINE, but is provided for reference.
 ### The errors are calculated for different norms (1 and inf; 
 ### 2 norm is left out for computational speed).
 ###
@@ -15,13 +16,16 @@ import pandas as pd
 import numpy as np
 from mpi4py import MPI
 
+### Can use the following instead of pip install . when working on a cluster
+# import sys
+# sys.path.append("../../")
+# from xThreat import xThreat
 
-sys.path.append("/home/kwvanarem/xthreat-research-v2/run-06-01-2026/")
 from xThreat import xThreat
 
 ##################### Define Paths ##################################
-true_model_path = '/scratch/kwvanarem/xthreat-research-v2/model-storage/run-06-01-2026/true-models/'
-resampled_model_path = '/scratch/kwvanarem/xthreat-research-v2/model-storage/run-06-01-2026/resampled-models/'
+true_model_path = '/scratch/kwvanarem/xthreat-research-v2/run-06-01-2026/data-storage/models/ground-truth/'
+resampled_model_path = '/scratch/kwvanarem/xthreat-research-v2/run-06-01-2026/data-storage/models/resampled/'
 #####################################################################
 
 

@@ -5,12 +5,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpi4py import MPI
 
-sys.path.append("/home/kwvanarem/xthreat-research-v2/run-06-01-2026/")
+### Can use the following instead of pip install . when working on a cluster
+# import sys
+# sys.path.append("../../../../")
+# from xThreat import xThreat
+
 from xThreat import xThreat
 
 ##################### Define Paths ##################################
-data_path = '/home/kwvanarem/xthreat-research-v2/run-06-01-2026/1-data-preparation/data-storage/preprocessed_data_top5_leagues.parquet'
-resampled_model_storage_directory = '/scratch/kwvanarem/xthreat-research-v2/model-storage/run-06-01-2026/resampled-models/'
+data_path = '/home/kwvanarem/xthreat-research-v2/run-06-01-2026/data-storage/preprocessed/top_5_leagues.parquet'
+resampled_model_storage_directory = '/scratch/kwvanarem/xthreat-research-v2/run-06-01-2026/data-storage/models/resampled/'
 #####################################################################
 
 script_starting_time = time.time()

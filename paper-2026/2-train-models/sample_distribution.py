@@ -14,8 +14,8 @@ import matplotlib.pyplot as plt
 from xThreat import xThreat
 
 ##################### Define Paths ##################################
-data_path = '../1-data-preparation/data-storage/preprocessed_data_top5_leagues.parquet'
-resampled_model_storage_directory = '../resampled-models/' # Note this might become a large folder, make sure to have enough storage space
+data_path = '../../data-storage/preprocessed/top_5_leagues.parquet'
+resampled_model_storage_directory = '../../data-storage/models/resampled/' # Note this might become a large folder, make sure to have enough storage space
 #####################################################################
 
 script_starting_time = time.time()
@@ -51,7 +51,6 @@ print(len(sampling_params))
 
 
 # Load the data
-data_path = 'preprocessed_data_top5_leagues.parquet'
 df_events = pd.read_parquet(data_path, engine='fastparquet')
 df_events['shot'] = ~df_events['shot_outcome'].isna()
 df_events['goal'] = df_events['shot_outcome'] == 'Goal'

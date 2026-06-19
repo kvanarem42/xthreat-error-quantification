@@ -3,12 +3,17 @@ import sys
 import pandas as pd
 import numpy as np
 
-sys.path.append("/home/kwvanarem/xthreat-research-v2/run-06-01-2026/")
+
+### Can use the following instead of pip install . when working on a cluster
+# import sys
+# sys.path.append("../../../")
+# from xThreat import xThreat
+
 from xThreat import xThreat
 
 ##################### Define Paths##################################
-data_path = '/home/kwvanarem/xthreat-research-v2/run-06-01-2026/1-data-preparation/data-storage/preprocessed_data_top5_leagues.parquet'
-storage_directory = '/scratch/kwvanarem/xthreat-research-v2/model-storage/run-06-01-2026/true-models/'
+data_path = '/home/kwvanarem/xthreat-research-v2/run-06-01-2026/data-storage/preprocessed/top_5_leagues.parquet'
+storage_directory = '/scratch/kwvanarem/xthreat-research-v2/run-06-01-2026/data-storage/models/ground-truth/'
 ####################################################################
 
 script_starting_time = time.time()
