@@ -1,7 +1,14 @@
 # Custom directories
 data-storage/
+data-storage/raw-data/
+data-storage/preprocessed/
+data-storage/outputs/
+data-storage/outputs/player_xT_ratings.parquet/
+1-data-preparation/data-storage/
+
 # model-storage/
 xT_ratings_resampled_10_000.parquet
+
 
 # Custom files
 
