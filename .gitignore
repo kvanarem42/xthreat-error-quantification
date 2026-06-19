@@ -1,9 +1,13 @@
 # Custom directories
-data-storage/
-# model-storage/
-xT_ratings_resampled_10_000.parquet
+data-storage/raw/
+data-storage/preprocessed/**
+!data-storage/preprocessed/euros_2020.parquet
+data-storage/outputs/maximal-error/player_resampled_xT_ratings.parquet/*
+1-data-preparation/data-storage/
+
 
 # Custom files
+
 
 
 # Byte-compiled / optimized / DLL files

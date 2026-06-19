@@ -209,9 +209,9 @@ For questions about large data files (resampled models, player ratings), please 
 If you use this code or data in your research, please cite:
 
 ```bibtex
-@article{vanArem2024xthreat,
+@article{vanArem2026xthreat,
   title   = {Model quality in football: quantifying the quality of an Expected Threat model},
-  author  = {van Arem, Koen and S{\"o}hl, Jakob and Bruinsma, Mirjam and Jongbloed, Geurt},
+  author  = {{Van Arem}, Koen and S{\"o}hl, Jakob and Bruinsma, Mirjam and Jongbloed, Geurt},
   journal = {arXiv preprint},
   year    = {2026},
   note    = {arXiv link to be added}
