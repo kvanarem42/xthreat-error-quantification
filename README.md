@@ -20,74 +20,53 @@ This repository contains the data, code, and analysis accompanying the preprint:
 
 > **"Model quality in football: quantifying the quality of an Expected Threat model"**
 > Koen van Arem, Jakob Söhl, Mirjam Bruinsma, Geurt Jongbloed
-> *(ArXiv link to be added)*
+> *[Link to paper](https://arxiv.org/abs/2604.21087)*
 
 Expected Threat (xT) models are widely used in football analytics to value ball actions. This work addresses a fundamental but underexplored question: **how good is a trained xT model, really?** We develop a framework to rigorously quantify model quality, provide uncertainty estimates, and derive practical rules of thumb for practitioners.
 
 
 ---
+## `xThreat` — Core Model Class
+
+The backbone of this repository. `src/xThreat/model.py` implements the `XThreat` model class used across nearly all scripts and notebooks. It provides the main interface to **train, visualize, and apply** an Expected Threat model, and is a natural starting point if you want to understand or reuse the modelling framework.
+
+---
 
 ## Repository Structure
+Repository Structure
+
+The repository is organized into three main components:
+
+### 1. Python package (src/xthreat)
+
+Reusable implementation of the Expected Threat model.
 
 ```
-.
-├── xThreat.py                                     ← Core xT model class
-├── requirements.txt
-│
+src/xthreat/
+├── model.py        ← Core XThreat model implementation
+└── __init__.py
+```
+
+The package provides a clean API for training and applying xT models programmatically.
+
+Legacy entry point:
+```
+xThreat.py  ← deprecated standalone script (kept for compatibility with computing cluster)
+```
+---
+### 2. Experimental pipeline (paper-2026/)
+
+This folder contains the full reproducibility pipeline used in the paper.
+```
+paper-2026/
 ├── 1-data-preparation/
-│   ├── download_clean_join.ipynb                  ← Main data pipeline notebook
-│   ├── datacleaner.py
-│   ├── datadownloader.py
-│   └── datasetcreator.py
-│
 ├── 2-train-models/
-|   ├── sample_distribution.py                                  ← Example script to resample model
-│   ├── true-models/
-│   │   ├── calculate_true_models.py                            ← Script to precalculate the 'true' models.
-│   ├── resampled-models/model-error-distribution/
-│   │   ├── sample_distribution_parallel.py                     ← Scripts for running simulations in section s4.1
-│   │   └── sample_distribution_parallel_extended.py            ← Scripts for running simulations in section s4.1
-|   ├── resampled-models/model-error-distribution/              ← Missing directory with scripts for running simulations in section s4.1
-│   └── model-storage/resampled-models/
-│       ├── xt-N100000-n_x16-n_y12-i_bootstrap42-...pickle      ← Example resampled models
-│       └── xt-N1300000-n_x64-n_y48-i_bootstrap169-...pickle    ← Example resampled models
-│
 ├── 3-calculate-values/
-│   ├── s4.1-model-error-distribution/
-│   │   ├── calculate_values_normal_xthreat.py                  ← Scripts to calculate quantities from resampled models section s4.1.1
-│   │   ├── calculate_values_normal_xthreat_extended.py         ← Scripts to calculate quantities from resampled models section s4.1.1
-│   │   ├── bootstrap_errors_normal_xthreat.csv                 ← Results containing these quantities (Part 1/2)
-│   │   └── bootstrap_errors_normal_xthreat_extended.csv        ← Results containing these quantities (Part 2/2)
-│   └── s4.2-max-error-quartile-changes/
-│       ├── calc-model-error/
-│       │   ├── calculate_values_normal_xthreat_max_error_full.py     ← Script to calculate quantities from resampled models section s4.1.2
-│       │   └── bootstrap_errors_normal_xthreat_max_error_full.csv    ← Results containing these quantities
-│       └── calc-player-xT-created/
-│           ├── calculate_resampled_player_ratings.py                 ← Script calculating player ratings from resampled models
-│           └── calculate_values_normal_xthreat.py                    ← Script calculating player ratings from ground truth models
-│
 └── 4-investigate-results/
-    ├── s4.1-distribution-model-error/
-    │   ├── exploratory_analysis.ipynb              ← Notebook showing some extra visualizations
-    │   ├── distribution_fitting.ipynb              ← Notebook fitting the distribution (S4.2.1)
-    │   └── model_parameters_influence.ipynb        ← Notebook showing influence of model parameters (S4.2.1)
-    ├── s4.2-acceptable-model-error/
-    │   └── find_maximal_error.ipynb                ← Notebook calculating maximal acceptable error (S4.2.2)
-    └── s5-application-and-illustration/
-        ├── example_euros_2020.ipynb                ← Notebook illustrating application of xT values (S5.2)
-        ├── rules_of_thumb_paper.ipynb              ← Notebook illustrating rules of thumb (S5.1)
-        └── xthreat_explanation.ipynb               ← General visualisations for elements in the xT model (S2)
 ```
-
 ---
 
-## `xThreat.py` — Core Model Class
-
-The backbone of this repository. `xThreat.py` implements the `XThreat` model class used across nearly all scripts and notebooks. It provides the main interface to **train, visualize, and apply** an Expected Threat model, and is a natural starting point if you want to understand or reuse the modelling framework.
-
----
-
-## Part 1 — Data Preparation
+#### Part 1 — Data Preparation
 
 📁 `1-data-preparation/`
 
@@ -102,15 +81,15 @@ Run `download_clean_join.ipynb` first to produce the dataset used in all subsequ
 
 ---
 
-## Part 2 — Model Training
+#### Part 2 — Model Training
 
 📁 `2-train-models/`
 
 | Subfolder | Description |
 |-----------|-------------|
-| `true-models/` | Scripts to train the ground-truth xT models on the full dataset |
-| `resampled-models/model-error-distribution/` | Scripts to sample new models from the ground truth (parallel versions for HPC) |
-| `model-storage/resampled-models/` | Two example resampled models included for illustration (`.pickle`) |
+| `sample_distribution.py` | Script which illustrates how the ground truth can be used to resample new models |
+| `resampled-models/model-error-distribution/` | Scripts for simulations of estimation error (parallel versions for HPC) |
+| `resampled-models/max-acceptable-error/` | Scripts for simulations for maximal acceptable error (parallel versions for HPC) |
 
 > **⚠️ Note on large-scale computations**
 >
@@ -120,7 +99,7 @@ Run `download_clean_join.ipynb` first to produce the dataset used in all subsequ
 
 ---
 
-## Part 3 — Calculate Values
+#### Part 3 — Calculate Values
 
 📁 `3-calculate-values/`
 
@@ -128,9 +107,11 @@ Contains the core computations that analyse the resampled models. Subfolders are
 
 | Subfolder | Paper section | Description |
 |-----------|---------------|-------------|
+| `example_calculate_errors.py` | Example of calculating the errors without parallel computing |
+| `example_calculate_errors_parallel.py` | Example of calculating the errors wit parallel computing |
 | `s4.1-model-error-distribution/` | §4.1.1 | Computes bootstrap error distributions; pre-computed results saved as `.csv` |
-| `s4.2-max-error-quartile-changes/calc-model-error/` | §4.1.2 | Computes maximum model errors across configurations; results in `.csv` |
-| `s4.2-max-error-quartile-changes/calc-player-xT-created/` | §4.1.2 | Computes resampled player ratings |
+| `s4.2-max-error-quartile-changes/calc-model-error/` | §4.1.2 | Computes maximum model errors across configurations; is done in two batches (A & B) |
+| `s4.2-max-error-quartile-changes/calc-player-xT-created/` | §4.1.2 | Computes resampled player ratings and corresponding model errors |
 
 > **⚠️ Note on player ratings**
 >
@@ -138,7 +119,7 @@ Contains the core computations that analyse the resampled models. Subfolders are
 
 ---
 
-## Part 4 — Investigate Results
+#### Part 4 — Investigate Results
 
 📁 `4-investigate-results/`
 
@@ -146,30 +127,144 @@ Contains the core computations that analyse the resampled models. Subfolders are
 
 Notebooks that present the paper's findings. Subfolders correspond to paper sections.
 
-### §4.1 — Distribution of Model Error
+##### §4.1 — Distribution of Model Error
 📁 `s4.1-distribution-model-error/`
 
 | Notebook | Description |
 |----------|-------------|
 | `distribution_fitting.ipynb` | Fits parametric distributions to the bootstrap errors |
 | `model_parameters_influence.ipynb` | Analyses how grid resolution and sample size affect model quality |
-| `exploratory_analysis.ipynb` | First look at the error distributions across model configurations |
+| `example_large_error.ipynb` | A quick illustration of a case with a large estimation error due to insufficient data |
 
-### §4.2 — Acceptable Model Error
+##### §4.2 — Acceptable Model Error
 📁 `s4.2-acceptable-model-error/`
 
 | Notebook | Description |
 |----------|-------------|
 | `find_maximal_error.ipynb` | Determines the threshold for acceptable model error in terms of quartile changes in player rankings |
 
-### §5 — Application and Illustration
+##### §5 — Application and Illustration
 📁 `s5-application-and-illustration/`
 
 | Notebook | Description |
 |----------|-------------|
 | `rules_of_thumb_paper.ipynb` | Derives and demonstrates practical rules of thumb for model quality |
 | `example_euros_2020.ipynb` | Applied example: using the xT model on UEFA Euro 2020 data |
-| `xthreat_explanation.ipynb` | Visualizations of part of the xT model |
+
+---
+### 3. Data storage (data-storage/)
+
+All datasets, model artifacts, and computed outputs are stored here.
+```
+data-storage/
+├── raw/                        ← Raw StatsBomb data
+├── preprocessed/              ← Cleaned datasets
+├── models/
+│   ├── ground-truth/          ← Trained xT models (various grid sizes)
+│   └── resampled/             ← Bootstrap / sampled models
+└── outputs/
+    ├── distribution/          ← Error distribution results
+    └── maximal-error/         ← Threshold / sensitivity results
+```
+---
+## Installation
+
+Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+Or install the package in editable mode (recommended):
+```bash
+pip install -e .
+```
+
+## Repository Structure
+
+```text
+.
+├── src/
+│   └── xthreat/
+│       ├── __init__.py
+│       └── model.py                  ← Core xThreat model implementation (package version)
+│
+├── xThreat.py                        ← Legacy / standalone entry-point for model usage
+│
+├── paper-2026/                      ← Full experimental pipeline used in the paper
+│
+│   ├── 1-data-preparation/
+│   │   ├── download_clean_join.ipynb
+│   │   ├── datacleaner.py
+│   │   ├── datadownloader.py
+│   │   └── datasetcreator.py
+│
+│   ├── 2-train-models/
+│   │   ├── sample_distribution.py
+│   │   ├── true-models/
+│   │   │   └── calculate_true_models.py
+│   │   │
+│   │   └── resampled-models/
+│   │       ├── model-error-distribution/
+│   │       │   ├── sample_distribution_parallel_A.py
+│   │       │   └── sample_distribution_parallel_B.py
+│   │       │
+│   │       └── max-acceptable-error/
+│   │           └── sample_16x12_model_parallel.py
+│
+│   ├── 3-calculate-values/
+│   │   ├── example_calculate_errors.py
+│   │   ├── example_calculate_errors_parallel.py
+│   │   │
+│   │   ├── s4.1-model-error-distribution/
+│   │   │   ├── calculate_errors_A.py
+│   │   │   └── calculate_errors_B.py
+│   │   │
+│   │   └── s4.2-max-error-quartile-changes/
+│   │       ├── calculate_errors.py
+│   │       └── calculate_resampled_player_ratings.py
+│
+│   └── 4-investigate-results/
+│       ├── s4.1-distribution-model-error/
+│       │   ├── distribution_fitting.ipynb
+│       │   ├── example_large_error.ipynb
+│       │   └── model_parameters_influence.ipynb
+│       │
+│       ├── s4.2-acceptable-model-error/
+│       │   └── find_maximal_error.ipynb
+│       │
+│       └── s5-application-and-illustration/
+│           ├── example_euros_2020.ipynb
+│           └── rules_of_thumb.ipynb
+│
+├── data-storage/
+│   ├── raw/
+│   │   ├── euros_2020/
+│   │   └── top_5_leagues/
+│   │
+│   ├── preprocessed/
+│   │   └── euros_2020.parquet
+│   │
+│   ├── models/
+│   │   ├── ground-truth/
+│   │   │   ├── xt-full-data-n_x8-n_y6.pickle
+│   │   │   ├── xt-full-data-n_x64-n_y48.pickle
+│   │   │   └── (other grid resolutions)
+│   │   │
+│   │   └── resampled/
+│   │       ├── xT_16x12_N_3_350_000.pkl
+│   │       ├── xt-N100000-...pickle
+│   │       └── xt-N1300000-...pickle
+│   │
+│   └── outputs/
+│       ├── distribution/
+│       │   ├── bootstrap_errors_A.csv
+│       │   └── bootstrap_errors_B.csv
+│       │
+│       └── maximal-error/
+│
+├── requirements.txt
+├── pyproject.toml
+└── README.md
+```
 
 ---
 
@@ -182,7 +277,7 @@ pip install -r requirements.txt
 ```
 
 ### Recommended Workflow
-
+Follow the structure in paper-2026. This structure is:
 ```
 1-data-preparation  ──►  2-train-models  ──►  3-calculate-values  ──►  4-investigate-results
 ```
