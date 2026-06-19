@@ -1,6 +1,7 @@
 ########################################################################
-### This script calculates the errors of the resampled xThreat models
+### This script is an example of how we calculate the errors of the resampled xThreat models
 ### models compared to the true xThreat model.
+### IT IS NOT USED IN THE PAPER PIPELINE, but is provided for reference.
 ### The errors are calculated for different norms (1 and inf; 
 ### 2 norm is left out for computational speed).
 ###
@@ -15,18 +16,17 @@ import pandas as pd
 import numpy as np
 from mpi4py import MPI
 
-
 ### Can use the following instead of pip install . when working on a cluster
 # import sys
-# sys.path.append("../../../")
+# sys.path.append("../../")
 # from xThreat import xThreat
 
 from xThreat import xThreat
 
 ##################### Define Paths ##################################
-true_model_path = '/scratch/kwvanarem/xthreat-research-v2/run-06-01-2026/data-storage/models/ground-truth/'
-resampled_model_path = '/scratch/kwvanarem/xthreat-research-v2/run-06-01-2026/data-storage/models/resampled/'
-results_path = 'home/kwvanarem/xthreat-research-v2/run-06-01-2026/data-storage/outputs/distribution/bootstrap_errors_A.csv'
+true_model_path = '../../data-storage/models/ground-truth/'
+resampled_model_path = '../../data-storage/models/resampled/'
+results_path = 'bootstrap_errors_xthreat.csv'
 #####################################################################
 
 
@@ -115,9 +115,7 @@ sample_sizes = [
 
 # The grid sizes
 grid_sizes = [
-    # (8, 6), (10, 8), (12, 9),  (14, 11), # New added grids
-    # (20, 15), (24, 18), (28, 21),   # New added grids
-    (16, 12), (32, 24), (40, 30), (48, 36), (56, 42), (64, 48), 
+    (16, 12), (32, 24), (40, 30), (48, 36), (56, 42), (64, 48),
 ]
 
 # The bootstraps performed in one run

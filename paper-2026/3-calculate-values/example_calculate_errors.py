@@ -14,7 +14,6 @@ import time
 import sys, os
 import pandas as pd
 import numpy as np
-from mpi4py import MPI
 
 ### Can use the following instead of pip install . when working on a cluster
 # import sys
@@ -24,8 +23,9 @@ from mpi4py import MPI
 from xThreat import xThreat
 
 ##################### Define Paths ##################################
-true_model_path = '/scratch/kwvanarem/xthreat-research-v2/run-06-01-2026/data-storage/models/ground-truth/'
-resampled_model_path = '/scratch/kwvanarem/xthreat-research-v2/run-06-01-2026/data-storage/models/resampled/'
+true_model_path = '../../data-storage/models/ground-truth/'
+resampled_model_path = '../../data-storage/models/resampled/'
+results_path = 'bootstrap_errors_xthreat.csv'
 #####################################################################
 
 
@@ -99,10 +99,10 @@ def add_errors_to_dict(dict_errors, true_model_path, resampled_model_path, n_x, 
 
 ############## Calculations ##############
 
-# Initialize MPI
-comm = MPI.COMM_WORLD
-rank = comm.Get_rank()  # Get process rank
-size = comm.Get_size()  # Get total number of processes
+# # Initialize MPI
+# comm = MPI.COMM_WORLD
+# rank = comm.Get_rank()  # Get process rank
+# size = comm.Get_size()  # Get total number of processes
 
 # Total number of bootstraps
 n_bootstraps = 1000
@@ -118,7 +118,7 @@ grid_sizes = [
 ]
 
 # The bootstraps performed in one run
-max_partition_size = 1042
+max_partition_size = 1_000_000
 
 # Create a list with all combinations and assign a unique random_state and partition number
 sampling_params = {}
@@ -150,41 +150,34 @@ for norm in norms:
 # Convert sampling_params to a list for distributing tasks
 tasks = list(sampling_params.items())
 
-# Divide tasks among available MPI ranks
-chunk_size = len(tasks) // size
-start_idx = rank * chunk_size
-end_idx = start_idx + chunk_size if rank != size - 1 else len(tasks)
+# # Divide tasks among available MPI ranks
+# chunk_size = len(tasks) // size
+# start_idx = rank * chunk_size
+# end_idx = start_idx + chunk_size if rank != size - 1 else len(tasks)
 
 # Local computation for each rank
 local_dict_errors = {column: [] for column in columns}
 
 counter = 0
-for (sample_size, n_x, n_y, i_bootstrap), (random_state, i_partition) in tasks[start_idx:end_idx]:
+for (sample_size, n_x, n_y, i_bootstrap), (random_state, i_partition) in tasks:
     counter += 1
-    if counter % 100 == 0 and rank==0:
-        print(f'Were currently at {counter} of {len(tasks[start_idx:end_idx])} at one of {size} nodes.')
+    if counter % 100 == 0:
+        print(f'Were currently at {counter} of {len(tasks)}.')
     if i_partition == 0:
         local_dict_errors = add_errors_to_dict(
             local_dict_errors, true_model_path, resampled_model_path, 
             n_x, n_y, sample_size, i_bootstrap, random_state, norms
         )
 
-# Gather results from all ranks at rank 0
-all_results = comm.gather(local_dict_errors, root=0)
+# Finalize results results
+final_dict_errors = {column: [] for column in columns}
+for key in final_dict_errors:
+    final_dict_errors[key].extend(local_dict_errors[key])
 
-# Only rank 0 processes the final results
-if rank == 0:
-    final_dict_errors = {column: [] for column in columns}
-    
-    # Merge results from all ranks
-    for result in all_results:
-        for key in final_dict_errors:
-            final_dict_errors[key].extend(result[key])
+# Convert to DataFrame
+df_errors = pd.DataFrame(final_dict_errors)
 
-    # Convert to DataFrame
-    df_errors = pd.DataFrame(final_dict_errors)
-    
-    # Save the results
-    df_errors.to_csv("bootstrap_errors_normal_xthreat.csv", index=False)
-    print("Final results saved as 'bootstrap_errors_normal_xthreat.csv'")
-    print(f'\nThe whole script took {int((time.time()-script_starting_time)/3600)}h, {int((time.time()-script_starting_time)%3600/60)}m, {int((time.time()-script_starting_time)%60)}s')
+# Save the results
+df_errors.to_csv(results_path, index=False)
+print(f"Final results saved as '{results_path}'")
+print(f'\nThe whole script took {int((time.time()-script_starting_time)/3600)}h, {int((time.time()-script_starting_time)%3600/60)}m, {int((time.time()-script_starting_time)%60)}s')

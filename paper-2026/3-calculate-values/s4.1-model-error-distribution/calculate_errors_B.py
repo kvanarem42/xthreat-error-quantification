@@ -27,6 +27,7 @@ from xThreat import xThreat
 ##################### Define Paths ##################################
 true_model_path = '/scratch/kwvanarem/xthreat-research-v2/run-06-01-2026/data-storage/models/ground-truth/'
 resampled_model_path = '/scratch/kwvanarem/xthreat-research-v2/run-06-01-2026/data-storage/models/resampled/'
+results_path = 'home/kwvanarem/xthreat-research-v2/run-06-01-2026/data-storage/outputs/distribution/bootstrap_errors_B.csv'
 #####################################################################
 
 script_starting_time = time.time()
@@ -187,6 +188,6 @@ if rank == 0:
     df_errors = pd.DataFrame(final_dict_errors)
     
     # Save the results
-    df_errors.to_csv("bootstrap_errors_normal_xthreat_extended.csv", index=False)
-    print("Final results saved as 'bootstrap_errors_normal_xthreat_extended.csv'")
+    df_errors.to_csv(results_path, index=False)
+    print(f"Final results saved as '{results_path}'")
     print(f'\nThe whole script took {int((time.time()-script_starting_time)/3600)}h, {int((time.time()-script_starting_time)%3600/60)}m, {int((time.time()-script_starting_time)%60)}s')
