@@ -48,6 +48,11 @@ src/xthreat/
 ```
 
 The package provides a clean API for training and applying xT models programmatically.
+After installing it via pip, the model can be imported via 
+```
+from xThreat import xThreat
+```
+
 
 Legacy entry point:
 ```
